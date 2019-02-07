@@ -7,11 +7,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./game-page.component.css']
 })
 export class GamePageComponent implements OnInit {
-  board = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""]
-  ];
+  board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   player: any;
   sqrId: any;
   user: any;
@@ -19,11 +15,11 @@ export class GamePageComponent implements OnInit {
   row: any;
   col: any;
   boardValues = {
-    "zero": "", "one": "", "two": "", "three": "", "four": "", "five": "", "six": "", "seven": "", "eight": "", "nine": "",
+    "zero": "", "one": "", "two": "", "three": "", "four": "", "five": "", "six": "", "seven": "", "eight": ""
   }
   isDraw = false;
 
-  ARRAY_LENGHT = 3;
+  ARRAY_LENGHT = 9;
 
   constructor(
     private route: ActivatedRoute
@@ -31,92 +27,138 @@ export class GamePageComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.route.snapshot.paramMap.get('player');
-    console.log("user", this.user);
     this.player = this.user;
     this.computer = (this.user == "x") ? "o" : "x";
   }
 
   onClick(sqrName, event) {
     this.sqrId = event.target.attributes.id.value;
-    if (this.boardValues[sqrName] === "") {
-      this.boardValues[sqrName] = this.player;
-      this.row = this.getRows(this.sqrId);
-      this.col = this.getCol(this.sqrId);
-      console.log("player", this.player);
-      this.board[this.row][this.col] = this.player;
-      console.log(this.board);
+    this.playerMove(sqrName);
+    if (this.checkWinner(this.board)) {
+      alert("You Won");
+      this.onReset();
+    }else if (this.checkDraw(this.board)) {
+      alert("It is a draw");
+      this.onReset();
+    } else{
       this.computerMove();
-
-      if (!this.checkWinner()) {
-        this.checkDraw();
-      }
-      // this.turn = (this.turn == this.user) ? this.computer : this.user; for 2 players
     }
   }
 
   onReset() {
     this.boardValues = {
-      "zero": "", "one": "", "two": "", "three": "", "four": "", "five": "", "six": "", "seven": "", "eight": "", "nine": "",
+      "zero": "", "one": "", "two": "", "three": "", "four": "", "five": "", "six": "", "seven": "", "eight": ""
     };
-    this.board = [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""]
-    ];
+    this.board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   }
 
-  getRows(id) {
-    return Math.floor(id / this.ARRAY_LENGHT);
-  }
-
-  getCol(id) {
-    return id % this.ARRAY_LENGHT;
-  }
-
-  checkWinner() {
-    for (var i = 0; i < this.ARRAY_LENGHT; i++) {
-      if (this.board[i][0] !== "" && this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2]) {    //for rows
-        alert("Game Complete!!!");
-        return true;
-      } else if (this.board[0][i] !== "" && this.board[0][i] === this.board[1][i] && this.board[1][i] === this.board[2][i]) {   //for coloms
-        alert("Game Complete!!!");
-        return true;
-      }
-    }
-
-    if (this.board[0][0] !== "" && this.board[0][0] === this.board[1][1] && this.board[1][1] === this.board[2][2]) {
-      alert("Game Complete!!!");
+  checkWinner(board) {
+    if (
+      (board[0] == this.player && board[1] == this.player && board[2] == this.player) ||
+      (board[3] == this.player && board[4] == this.player && board[5] == this.player) ||
+      (board[6] == this.player && board[7] == this.player && board[8] == this.player) ||
+      (board[0] == this.player && board[3] == this.player && board[6] == this.player) ||
+      (board[1] == this.player && board[4] == this.player && board[7] == this.player) ||
+      (board[2] == this.player && board[5] == this.player && board[8] == this.player) ||
+      (board[0] == this.player && board[4] == this.player && board[8] == this.player) ||
+      (board[2] == this.player && board[4] == this.player && board[6] == this.player)) {
       return true;
-    } else if (this.board[0][2] !== "" && this.board[0][2] === this.board[1][1] && this.board[1][1] === this.board[2][0]) {
-      alert("Game Complete!!!");
-      return true;
+    } else {
+      return false;
+
     }
   }
 
-  checkDraw() {
-    for (var i = 0; i < this.ARRAY_LENGHT; i++) {
-      for (var j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === "") {
-          return;
-        }
-      }
+  checkDraw(board) {
+    for (var i = 0; i < board.length; i++) {
+      if (board[i] !== 'x' && board[i] !== 'o')
+        return false;
     }
-    alert("It is a draw!!");
+    return true;
   }
 
   computerMove() {
+    // var spot = this.minimax(this.board, this.computer).index;
+    // var spotValue = this.returnNumberName(spot);
+    // this.boardValues[spotValue] = this.computer;
+    // this.board[spot] = this.computer;
     var random;
     do {
       var r = Math.floor(Math.random() * 8);
       random = this.returnNumberName(r);
     } while (this.boardValues[random] != "");
     this.boardValues[random] = this.computer;
-    this.row = this.getRows(r);
-    this.col = this.getCol(r);
-    this.board[this.row][this.col] = this.computer;
+    this.board[r] = this.computer;
+    if(this.checkWinner(this.board)){
+      alert("You Loose");
+    }
+  }
+
+  playerMove(spotValue) {
+    if (this.boardValues[spotValue] === "") {
+      this.boardValues[spotValue] = this.player;
+      this.board[this.sqrId] = this.player;
+    }
+  }
+
+  minimax(newBoard, player) {
+
+    var availableSpot = this.getAvailableSpots(newBoard);
+
+    var moves = [];
+
+    for (var i = 0; i < availableSpot.length; i++) {
+      var spot = availableSpot[i];
+      var move = {
+        index: 0,
+        score: 0
+      };
+      move.index = newBoard[spot];
+
+      newBoard[spot] = player;
+
+      if(player === this.computer){
+        let result = this.minimax(newBoard, this.user);
+        move.score = result.score;
+      } else{
+        let result = this.minimax(newBoard, this.computer);
+        move.score = result.score;
+      }
+
+      newBoard[spot] = move.index;
+
+      moves.push(move);
+
+    }
+
+    var bestMove;
+    if(player === this.computer){
+      let bestScore = -10000;
+      moves.forEach(move => {
+        if(move.score > bestScore){
+          bestScore = move.score;
+          bestMove = moves.indexOf(move);
+        }
+      });
+    } else{
+      let bestScore = 10000;
+      moves.forEach(move => {
+        if(move.score < bestScore){
+          bestScore = move.score;
+          bestMove = moves.indexOf(move);
+        }
+      });
+    }
+
+    return moves[bestMove];
+  }
+
+  getAvailableSpots(board) {
+    return board.filter(x => x != "x" && x != "o");
   }
 
   returnNumberName(num) {
+    num = +num;
     switch (num) {
       case 0:
         return "zero";
