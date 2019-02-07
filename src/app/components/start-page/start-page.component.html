@@ -1,0 +1,6 @@
+<h4> Choose X or O.</h4>
+<form style="margin-left: 10.3rem;">
+  <label class="radio-inline choose"><input type="radio" name="optradio" [checked]="player === 'x'" (change)="changePlayer('x')">X Player</label>
+  <label class="radio-inline choose"><input type="radio" name="optradio" [checked]="player === 'o'" (change)="changePlayer('o')">O Player</label><br>
+  <button class="btn btn-info start-btn" type="submit" routerLink="/gamepage/{{player}}">Start Game</button>
+</form>

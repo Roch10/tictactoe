@@ -1,0 +1,24 @@
+<div class="boardContainer">
+  <!-- first row -->
+  <div class="row">
+    <div id="0" class="square bottom right clickable" (click)="onClick('zero', $event)">{{ boardValues.zero }}</div>
+    <div id="1" class="square bottom right clickable" (click)="onClick('one', $event)">{{ boardValues.one }}</div>
+    <div id="2" class="square bottom clickable" (click)="onClick('two', $event)">{{ boardValues.two }}</div>
+  </div>
+
+  <!-- second row -->
+  <div class="row">
+    <div id="3" class="square bottom right clickable" (click)="onClick('three', $event)">{{ boardValues.three }}</div>
+    <div id="4" class="square bottom right clickable" (click)="onClick('four', $event)">{{ boardValues.four }}</div>
+    <div id="5" class="square bottom clickable" (click)="onClick('five', $event)">{{ boardValues.five }}</div>
+  </div>
+
+  <!-- third row -->
+  <div class="row">
+    <div id="6" class="square right clickable" (click)="onClick('six', $event)">{{ boardValues.six }}</div>
+    <div id="7" class="square right clickable" (click)="onClick('seven', $event)">{{ boardValues.seven }}</div>
+    <div id="8" class="square clickable" (click)="onClick('eight', $event)">{{ boardValues.eight }}</div>
+  </div>
+</div>
+<br><br>
+<button class="btn btn-info" (click)="onReset()">Reset</button>
